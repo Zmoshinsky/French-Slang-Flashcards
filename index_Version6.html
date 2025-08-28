@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>French Slang Flashcards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            font-family: 'Fredoka', 'Quicksand', Arial, sans-serif;
+            color: #222;
+            background: linear-gradient(135deg, #7f53ac 0%, #647dee 100%);
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 1200px;
+        }
+        header { text-align: center; color: #fff; margin-bottom: 40px; }
+        h1 {
+            font-family: 'Fredoka', cursive, sans-serif;
+            font-size: 2.8em;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 1px 3px 12px #0002;
+        }
+        .subtitle { color: #fff; font-size: 1.2em; opacity: 0.9; font-family: 'Quicksand', sans-serif; }
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 28px;
+            padding: 20px 0;
+        }
+        .topic-card {
+            background: linear-gradient(135deg, #f7b267 0%, #f4845f 100%);
+            border-radius: 22px;
+            padding: 28px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px 0 #0001;
+            color: #fff;
+            border: none;
+            outline: none;
+            font-family: 'Fredoka', 'Quicksand', Arial, sans-serif;
+        }
+        .topic-card:hover, .topic-card:focus {
+            transform: scale(1.05) rotate(-2deg);
+            box-shadow: 0 8px 22px 0 #0002;
+            z-index: 2;
+        }
+        .topic-emoji {
+            font-size: 3.2em;
+            margin-bottom: 12px;
+            display: block;
+            filter: drop-shadow(0 2px 6px #fff6);
+        }
+        .topic-title {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #fff;
+            font-family: 'Fredoka', cursive, sans-serif;
+            text-shadow: 0 2px 6px #0001;
+            letter-spacing: 1px;
+        }
+        .topic-desc {
+            color: #fff;
+            font-size: 1.05em;
+            opacity: 0.94;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .topic-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .back-btn {
+            font-size: 1.7em;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            margin-right: 20px;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 2px 10px #0001;
+        }
+        .back-btn:hover {
+            background: #fff;
+            color: #7f53ac;
+        }
+        .practice-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding-top: 15px;
+        }
+        .flashcard {
+            background: linear-gradient(120deg, #f7b267 0%, #f4845f 100%);
+            border-radius: 22px;
+            width: 100%;
+            max-width: 350px;
+            height: 260px;
+            margin: 0 auto 25px auto;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(.86,-0.19,.64,1.36);
+            box-shadow: 0 8px 32px #0002;
+            font-family: 'Fredoka', 'Quicksand', Arial, sans-serif;
+            perspective: 1200px;
+        }
+        .flashcard .front, 
+        .flashcard .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            padding: 25px 18px 18px 18px;
+            text-align: center;
+            border-radius: 18px;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+        .flashcard .front {
+            background: linear-gradient(120deg, #f7b267 0%, #f4845f 100%);
+            color: #222;
+            font-family: 'Fredoka', cursive, sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            transform: rotateY(0deg);
+        }
+        .flashcard .back {
+            background: linear-gradient(120deg, #7f53ac 0%, #647dee 100%);
+            color: #fff;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2em;
+            font-weight: 400;
+            transform: rotateY(180deg);
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 6px #fff4);
+            user-select: none;
+            pointer-events: none;
+        }
+        .controls {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 24px;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .controls button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.07em;
+            font-family: 'Fredoka', cursive, sans-serif;
+            font-weight: 700;
+            color: #fff;
+            transition: background 0.2s, transform 0.18s;
+            box-shadow: 0 2px 8px #0001;
+        }
+        .controls button:hover {
+            transform: scale(1.07);
+            opacity: 0.92;
+        }
+        .knew {
+            background: linear-gradient(120deg, #56e39f 50%, #59c3c3 100%);
+        }
+        .didnt {
+            background: linear-gradient(120deg, #fa4659 60%, #ffb385 100%);
+        }
+        .progress {
+            text-align: center;
+            color: #fff;
+            font-size: 1.13em;
+            font-family: 'Quicksand', sans-serif;
+            letter-spacing: .5px;
+            text-shadow: 0 1px 3px #0002;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        footer {
+            text-align: center;
+            margin-top: 45px;
+            color: #fff;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            opacity: 0.85;
+            text-shadow: 0 1px 3px #0002;
+        }
+        @media (max-width: 500px) {
+            .practice-container { padding-top: 0; }
+            .flashcard { height: 160px; max-width: 98vw; min-width: 0; }
+            .flashcard .front, .flashcard .back { font-size: 1.05em; padding: 6px 2px; }
+            .card-emoji { font-size: 1.2em; margin-bottom: 4px; }
+            .controls, .progress { max-width: 99vw; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        // Your existing JavaScript code here
+        const TOPIC_EMOJIS = {
+            food: "🍟",
+            greetings: "👋",
+            love: "❤️",
+            work: "💼"
+        };
+
+        const SLANG_EMOJIS = {
+            // Food
+            "La bouffe": "🍽️",
+            "Un resto": "🍴",
+            "C'est bon": "😋",
+            "Miam miam": "🤤",
+            "Une baguette": "🥖",
+            "Le petit-déj": "🥐",
+            "Le goûter": "🍪",
+            "Un casse-croûte": "🥪",
+            // Greetings
+            "Salut!": "👋",
+            "Ça va?": "🙂",
+            "À plus!": "👋",
+            "Coucou!": "🙋‍♂️",
+            "Comment ça va?": "❓",
+            "À toute!": "⏰",
+            // Love
+            "Mon coeur": "💖",
+            "Je t'aime": "😍",
+            "Mon chéri/Ma chérie": "😘",
+            "Bisous": "💋",
+            "Je t'adore": "🥰",
+            // Work
+            "Le boulot": "💼",
+            "Le taf": "🧑‍💻",
+            "Bosser": "🛠️",
+            "Un collègue": "🤝",
+            "Le bureau": "🏢"
+        };
+
+        const TOPICS = [
+            {id: "food", name: "Food & Eating", emoji: "🍟", desc: "French food and eating slang."},
+            {id: "greetings", name: "Greetings", emoji: "👋", desc: "Say hi and bye the cool way."},
+            {id: "love", name: "Love & Romance", emoji: "❤️", desc: "Express affection in French slang."},
+            {id: "work", name: "Work & Office", emoji: "💼", desc: "Work, job, and office slang."}
+        ];
+
+        const SLANG = {
+            food: [
+                {french: "La bouffe", english: "Food (casual)"},
+                {french: "Un resto", english: "Restaurant"},
+                {french: "C'est bon", english: "It's good"},
+                {french: "Miam miam", english: "Yummy"},
+                {french: "Une baguette", english: "French bread"},
+                {french: "Le petit-déj", english: "Breakfast"},
+                {french: "Le goûter", english: "Snack time"},
+                {french: "Un casse-croûte", english: "Quick snack/sandwich"}
+            ],
+            greetings: [
+                {french: "Salut!", english: "Hi!/Bye! (informal)"},
+                {french: "Ça va?", english: "How are you?"},
+                {french: "À plus!", english: "See you later!"},
+                {french: "Coucou!", english: "Hey! (friendly)"},
+                {french: "Comment ça va?", english: "How's it going?"},
+                {french: "À toute!", english: "See you in a bit!"}
+            ],
+            love: [
+                {french: "Mon coeur", english: "My heart (term of endearment)"},
+                {french: "Je t'aime", english: "I love you"},
+                {french: "Mon chéri/Ma chérie", english: "My darling"},
+                {french: "Bisous", english: "Kisses"},
+                {french: "Je t'adore", english: "I adore you"}
+            ],
+            work: [
+                {french: "Le boulot", english: "Work (casual)"},
+                {french: "Le taf", english: "Work/Job (very casual)"},
+                {french: "Bosser", english: "To work (informal)"},
+                {french: "Un collègue", english: "Coworker"},
+                {french: "Le bureau", english: "The office"}
+            ]
+        };
+
+        function renderHome() {
+            document.title = "French Slang Flashcards";
+            document.getElementById('app').innerHTML = `
+                <header>
+                    <h1>French Slang Flashcards</h1>
+                    <div class="subtitle">Pick a topic & test your knowledge in style! 🎨✨</div>
+                </header>
+                <main>
+                    <div class="topic-grid" id="topicGrid"></div>
+                </main>
+                <footer>Made with 💜 by Zmoshinsky • 2025-08-28 22:41:50</footer>
+            `;
+            const topicGrid = document.getElementById('topicGrid');
+            TOPICS.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                card.setAttribute('aria-label', `Practice ${topic.name} slang`);
+                card.innerHTML = `
+                    <span class="topic-emoji">${topic.emoji}</span>
+                    <div class="topic-title">${topic.name}</div>
+                    <div class="topic-desc">${topic.desc}</div>
+                `;
+                card.onclick = () => renderPractice(topic.id);
+                card.onkeypress = (e) => {
+                    if (e.key === "Enter" || e.key === " ") card.onclick();
+                };
+                topicGrid.appendChild(card);
+            });
+        }
+
+        function renderPractice(topicId) {
+            const topic = TOPICS.find(t => t.id === topicId);
+            if (!topic) { renderHome(); return; }
+            document.title = `Practice: ${topic.name}`;
+            document.getElementById('app').innerHTML = `
+                <header class="topic-header">
+                    <button class="back-btn" id="backBtn" aria-label="Back to topics">←</button>
+                    <h1 id="topicTitle">${topic.emoji} ${topic.name}</h1>
+                </header>
+                <main>
+                    <div class="practice-container">
+                        <div class="flashcard" id="flashcard" tabindex="0" role="button">
+                            <div class="front" id="card-front"></div>
+                            <div class="back" id="card-back"></div>
+                        </div>
+                        <div class="controls" id="controls" style="display:none">
+                            <button class="knew" id="knew">Knew it 👍</button>
+                            <button class="didnt" id="didnt">Didn't know 👎</button>
+                        </div>
+                        <div class="progress" id="progress" role="status"></div>
+                    </div>
+                </main>
+            `;
+            
+            document.getElementById('backBtn').onclick = renderHome;
+            const cards = SLANG[topicId] || [];
+            let current = 0, flipped = false, known = 0, unknown = 0;
+            const flashcard = document.getElementById('flashcard');
+            const front = document.getElementById('card-front');
+            const back = document.getElementById('card-back');
+            const controls = document.getElementById('controls');
+            const progress = document.getElementById('progress');
+            
+            function showCard() {
+                if (cards.length === 0) {
+                    front.innerHTML = '<span class="card-emoji">🤷‍♂️</span>No cards yet!';
+                    back.innerHTML = '<span class="card-emoji">🎭</span>Check another topic';
+                    progress.textContent = 'No cards available';
+                    flashcard.classList.remove('flipped');
+                    controls.style.display = 'none';
+                    return;
+                }
+                flipped = false;
+                flashcard.classList.remove('flipped');
+                
+                // Get emoji for current card and use it on both sides
+                const emoji = SLANG_EMOJIS[cards[current].french] || TOPIC_EMOJIS[topicId] || "🗂️";
+                
+                front.innerHTML = `<span class="card-emoji">${emoji}</span>${cards[current].french}`;
+                back.innerHTML = `<span class="card-emoji">${emoji}</span>${cards[current].english}`;
+                
+                controls.style.display = 'none';
+                updateProgress();
+            }
+
+            function updateProgress() {
+                progress.textContent = `Card ${current + 1} of ${cards.length} • Knew: ${known} | Didn't Know: ${unknown}`;
+            }
+            
+            function handleCardFlip() {
+                if (cards.length === 0) return;
+                if (!flipped) {
+                    flashcard.classList.add('flipped');
+                    flipped = true;
+                    controls.style.display = 'flex';
+                }
+            }
+            
+            function nextCard() {
+                if (current + 1 >= cards.length) {
+                    setTimeout(() => {
+                        if (confirm(`Topic complete!\nKnew: ${known}\nDidn't Know: ${unknown}\n\nTry again?`)) {
+                            current = 0; 
+                            known = 0; 
+                            unknown = 0;
+                            flashcard.classList.remove('flipped'); // Reset flip state
+                            setTimeout(showCard, 100); // Small delay before showing new card
+                        } else {
+                            renderHome();
+                        }
+                    }, 200);
+                } else {
+                    current++;
+                    flashcard.classList.remove('flipped'); // Reset flip state
+                    setTimeout(showCard, 100); // Small delay before showing new card
+                }
+            }
+            
+            flashcard.addEventListener('click', handleCardFlip);
+            flashcard.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') handleCardFlip();
+            });
+            
+            document.getElementById('knew').addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                known++; 
+                nextCard();
+            });
+            
+            document.getElementById('didnt').addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                unknown++; 
+                nextCard();
+            });
+            
+            showCard();
+        }
+
+        // Start the app
+        renderHome();
+        window.addEventListener('popstate', () => { renderHome(); });
+    </script>
+</body>
+</html>
